@@ -13,7 +13,7 @@ const min_button = document.getElementById("min-button");
 const max_button = document.getElementById("max-button");
 const restore_button = document.getElementById("restore-button");
 const close_button = document.getElementById("close-button");
-const twitch_container = document.getElementById("twitch-container");
+// const twitch_container = document.getElementById("twitch-container");
 
 const select_class = "channel_selection";
 
@@ -40,9 +40,8 @@ document.onreadystatechange = () => {
         window_channel_check.addEventListener('change', alwaysTop);
 
         ipcRenderer.on('toggle-title-bar', (event, data) => {
-            console.debug(event);
-            title_bar.classList.toggle("min");
-            twitch_container.classList.toggle("max");
+            title_bar.classList.toggle("hide");
+            // twitch_container.classList.toggle("max");
         });
 
         buildDataListElements();

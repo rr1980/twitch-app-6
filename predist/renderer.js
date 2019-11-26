@@ -9,7 +9,7 @@ var min_button = document.getElementById("min-button");
 var max_button = document.getElementById("max-button");
 var restore_button = document.getElementById("restore-button");
 var close_button = document.getElementById("close-button");
-var twitch_container = document.getElementById("twitch-container");
+// const twitch_container = document.getElementById("twitch-container");
 var select_class = "channel_selection";
 var twitchOptions;
 var player;
@@ -29,9 +29,8 @@ document.onreadystatechange = function () {
         window_channel_button.addEventListener('click', goChannel);
         window_channel_check.addEventListener('change', alwaysTop);
         ipcRenderer.on('toggle-title-bar', function (event, data) {
-            console.debug(event);
-            title_bar.classList.toggle("min");
-            twitch_container.classList.toggle("max");
+            title_bar.classList.toggle("hide");
+            // twitch_container.classList.toggle("max");
         });
         buildDataListElements();
         twitchOptions = {

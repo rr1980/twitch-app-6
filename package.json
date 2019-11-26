@@ -31,7 +31,14 @@
       "dist/**"
     ],
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "dist//icons/icon.png"
     }
   },

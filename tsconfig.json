@@ -8,7 +8,7 @@
         "removeComments": false,
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "dist",
+        "outDir": "predist",
         "baseUrl": ".",
         "paths": {
             "*": [

@@ -9,12 +9,14 @@
   ],
   "author": "rr1980",
   "license": "ISC",
-  "main": "dist/main.js",
+  "main": "dist/main.min.js",
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc && npm run minify",
+    "minify": "uglifyjs --compress --mangle --output dist/main.min.js -- predist/main.js && uglifyjs --compress --mangle --output dist/renderer.min.js -- predist/renderer.js",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron ./dist/main.js",
+    "start": "npm run build && electron ./predist/main.js",
     "dist": "electron-builder",
     "pack": "electron-builder --dir"
   },
@@ -41,6 +43,7 @@
     "@types/electron": "^1.6.10",
     "electron": "^7.1.2",
     "electron-builder": "^21.2.0",
+    "minify": "^4.1.3",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.2"

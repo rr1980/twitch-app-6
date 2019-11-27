@@ -48,13 +48,15 @@ document.onreadystatechange = () => {
             title_bar.classList.toggle("hide");
         });
 
+        ipcRenderer.on('toggle-dev', (event, data) => {
+            win.webContents.openDevTools();
+        });
+
         initChannels();
 
         buildDataListElements();
 
         const lastChnnel = getLastChannel();
-
-        console.debug(lastChnnel);
 
         twitchOptions = {
             channel: lastChnnel ? lastChnnel.name : null,

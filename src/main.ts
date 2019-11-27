@@ -46,10 +46,14 @@ const create = () => {
   mainWindow.on('blur', () => mainWindowHandler.stop(16, 9, 1));
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
- mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
   mainWindowHandler = new aspect(mainWindow);
 
   electronLocalshortcut.register(mainWindow, 'Escape', () => {
     mainWindow.webContents.send('toggle-title-bar', true);
+  });
+
+  electronLocalshortcut.register(mainWindow, 'F12', () => {
+    mainWindow.webContents.send('toggle-dev', true);
   });
 };

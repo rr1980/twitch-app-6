@@ -1,6 +1,10 @@
 const { remote, ipcRenderer } = require('electron');
 
 declare var Twitch: any;
+interface Channel {
+    name: string,
+    date: Date
+}
 
 const win = remote.getCurrentWindow();
 
@@ -19,6 +23,7 @@ const select_class = "channel_selection";
 
 let twitchOptions;
 let player;
+let channels: Channel[] = [];
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -43,17 +48,22 @@ document.onreadystatechange = () => {
             title_bar.classList.toggle("hide");
         });
 
+        initChannels();
+
         buildDataListElements();
 
+        const lastChnnel = getLastChannel();
+
         twitchOptions = {
-            channel: getStoragedChannel(),
+            channel: lastChnnel ? lastChnnel.name : null,
             height: "100%",
             width: "100%",
         };
 
-        getChannelInfos(twitchOptions.channel);
-
+        window_channel_input.value = twitchOptions.channel;
         player = new Twitch.Player("twitch-container", twitchOptions);
+
+        getChannelInfos(twitchOptions.channel);
     }
 };
 
@@ -88,11 +98,11 @@ const buildRequest = (url: string, method: string = null) => {
 
 const getChannelInfos = (channel: string) => {
 
-    if(!channel){
+    if (!channel) {
         return;
     }
 
-    buildRequest('https://api.twitch.tv/kraken/users?login='+ channel).then((response_users: any) => {
+    buildRequest('https://api.twitch.tv/kraken/users?login=' + channel).then((response_users: any) => {
         buildRequest('https://api.twitch.tv/kraken/streams/' + response_users.users[0]._id).then((response_streams: any) => {
             const game = response_streams.stream.game;
             const viewers = response_streams.stream.viewers;
@@ -107,87 +117,67 @@ const getChannelInfos = (channel: string) => {
 }
 
 const goChannel = (event: Event = null) => {
-    const oldChannel = twitchOptions.channel;
+    const oldChannel = getLastChannel();
     const newChannel = window_channel_input.value;
-    if (newChannel !== null && newChannel !== oldChannel) {
-        getChannelInfos(newChannel);
-        twitchOptions.channel = newChannel;
+    if (newChannel !== null && (!oldChannel || newChannel !== oldChannel.name)) {
+        window_channel_input.value = newChannel;
         setStoragedChannel(newChannel);
         player.setChannel(newChannel);
+        getChannelInfos(newChannel);
+    }
+}
+
+const initChannels = () => {
+    const _channels_string = localStorage.getItem("channels");
+
+    if (_channels_string) {
+        const _channels = JSON.parse(_channels_string) as Channel[];
+        channels = _channels.sort((a, b) => 0 - (a.date > b.date ? 1 : -1));
     }
 }
 
 const setStoragedChannel = (currentChannel: string) => {
-    if (!currentChannel) {
-        return;
-    }
 
-    const channels_string = localStorage.getItem("channels");
-    if (channels_string) {
-        const channels = JSON.parse(channels_string);
+    const exist = channels.find(x => x.name === currentChannel);
 
-        if (!channels.find((x: string) => x === currentChannel)) {
-
-            channels.push(currentChannel);
-            localStorage.setItem("channels", JSON.stringify(channels));
-
-            buildDataListElements();
-        }
-    }
-
-    (document.getElementById("window-channel-input") as HTMLInputElement).value = currentChannel;
-    localStorage.setItem("currentChannel", currentChannel);
-};
-
-const getStoragedChannel = () => {
-    let currentChannel = localStorage.getItem("currentChannel");
-    if (!currentChannel) {
-        localStorage.setItem("currentChannel", "noway4u_sir");
-        currentChannel = "noway4u_sir";
-    }
-
-    const channels_string = localStorage.getItem("channels");
-    if (channels_string) {
-        const channels = JSON.parse(channels_string);
-        if (channels.length < 1) {
-            localStorage.setItem("channels", JSON.stringify(["noway4u_sir"]));
-        }
+    if (exist) {
+        exist.date = new Date();
     }
     else {
-        localStorage.setItem("channels", JSON.stringify(["noway4u_sir"]));
+        channels.push({
+            name: currentChannel,
+            date: new Date()
+        });
     }
 
-    window_channel_input.value = currentChannel;
-    return currentChannel;
-};
+    const _channels = channels.sort((a, b) => 0 - (a.date > b.date ? 1 : -1));
+    localStorage.setItem("channels", JSON.stringify(_channels));
+    initChannels();
+    buildDataListElements();
+}
+
+const getLastChannel = () => {
+    if (channels && channels.length) {
+        channels = channels.sort((a, b) => 0 - (a.date > b.date ? 1 : -1));
+        return channels[0];
+    }
+}
 
 const buildDataListElements = () => {
-    const channels_string = localStorage.getItem("channels");
 
-    if (channels_string) {
-        const channels = JSON.parse(channels_string);
-        if (channels.length > 0) {
-            const els = document.getElementsByClassName(select_class);
+    window_channel_input_select.innerHTML = "";
 
-            for (let index = 0; index < els.length; index++) {
-                const element = els[index];
-                window_channel_input_select.removeChild(element);
-            }
-
-            channels.forEach((item) => {
-                const id = "channel_selection_" + item;
-                const el = document.getElementById(id);
-                if (!el) {
-                    const option = document.createElement('option');
-                    option.id = id;
-                    option.classList.add(select_class);
-                    option.value = item;
-                    window_channel_input_select.appendChild(option);
-                }
-            });
-        }
+    if (channels.length > 0) {
+        channels.forEach((item) => {
+            const id = "channel_selection_" + item.name;
+            const option = document.createElement('option');
+            option.id = id;
+            option.classList.add(select_class);
+            option.value = item.name;
+            window_channel_input_select.appendChild(option);
+        });
     }
-};
+}
 
 const toggleMaxRestoreButtons = () => {
     if (win.isMaximized()) {

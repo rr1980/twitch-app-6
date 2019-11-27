@@ -3,10 +3,13 @@ const electronLocalshortcut = require('electron-localshortcut');
 const aspect = require("electron-aspectratio");
 
 const app = electron.app;
+const menu = electron.Menu;
 const BrowserWindow = electron.BrowserWindow;
 
 let mainWindow = null;
 let mainWindowHandler: any;
+
+menu.setApplicationMenu(false);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -26,11 +29,9 @@ const create = () => {
   mainWindow = new BrowserWindow({
     width: 1366,
     height: 768,
-    minWidth: 500,
-    minHeight: 281,
-    autoHideMenuBar: true,
+    minWidth: 600,
+    minHeight: 338,
     darkTheme: true,
-    titleBarStyle: 'hiddenInset',
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -45,7 +46,7 @@ const create = () => {
   mainWindow.on('blur', () => mainWindowHandler.stop(16, 9, 1));
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
-
+  //mainWindow.webContents.openDevTools();
   mainWindowHandler = new aspect(mainWindow);
 
   electronLocalshortcut.register(mainWindow, 'Escape', () => {

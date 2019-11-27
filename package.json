@@ -12,7 +12,7 @@
   "main": "dist/main.min.js",
   "scripts": {
     "build": "tsc",
-    "build:prod": "tsc && npm run minify",
+    "build:prod": "tsc && npm run minify && npm run dist",
     "minify": "uglifyjs --compress --mangle --output dist/main.min.js -- predist/main.js && uglifyjs --compress --mangle --output dist/renderer.min.js -- predist/renderer.js",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",

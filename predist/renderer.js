@@ -5,11 +5,11 @@ var window_channel_input = document.getElementById("window-channel-input");
 var window_channel_button = document.getElementById("window-channel-button");
 var window_channel_check = document.getElementById("window-channel-check");
 var window_channel_input_select = document.getElementById("window-channel-input-select");
+var window_game = document.getElementById("window-game");
 var min_button = document.getElementById("min-button");
 var max_button = document.getElementById("max-button");
 var restore_button = document.getElementById("restore-button");
 var close_button = document.getElementById("close-button");
-// const twitch_container = document.getElementById("twitch-container");
 var select_class = "channel_selection";
 var twitchOptions;
 var player;
@@ -30,7 +30,6 @@ document.onreadystatechange = function () {
         window_channel_check.addEventListener('change', alwaysTop);
         ipcRenderer.on('toggle-title-bar', function (event, data) {
             title_bar.classList.toggle("hide");
-            // twitch_container.classList.toggle("max");
         });
         buildDataListElements();
         twitchOptions = {
@@ -38,14 +37,57 @@ document.onreadystatechange = function () {
             height: "100%",
             width: "100%"
         };
+        getChannelInfos(twitchOptions.channel);
         player = new Twitch.Player("twitch-container", twitchOptions);
     }
+};
+var buildRequest = function (url, method) {
+    if (method === void 0) { method = null; }
+    var request = new XMLHttpRequest();
+    return new Promise(function (resolve, reject) {
+        request.onreadystatechange = function () {
+            if (request.readyState !== 4) {
+                return;
+            }
+            if (request.status >= 200 && request.status < 300) {
+                resolve(JSON.parse(request.response));
+            }
+            else {
+                reject({
+                    status: request.status,
+                    statusText: request.statusText
+                });
+            }
+        };
+        request.open(method || 'GET', url, true);
+        request.setRequestHeader("Accept", "application/vnd.twitchtv.v5+json");
+        request.setRequestHeader("Client-ID", "5cpe3bosnf6rh3rll3ic5i9lszmfca");
+        request.send();
+    });
+};
+var getChannelInfos = function (channel) {
+    if (!channel) {
+        return;
+    }
+    buildRequest('https://api.twitch.tv/kraken/users?login=' + channel).then(function (response_users) {
+        buildRequest('https://api.twitch.tv/kraken/streams/' + response_users.users[0]._id).then(function (response_streams) {
+            var game = response_streams.stream.game;
+            var viewers = response_streams.stream.viewers;
+            var html = game + " - " + viewers;
+            window_game.innerText = html;
+        })["catch"](function (error) {
+            console.log('Something went wrong streams', error);
+        });
+    })["catch"](function (error) {
+        console.log('Something went wrong on users', error);
+    });
 };
 var goChannel = function (event) {
     if (event === void 0) { event = null; }
     var oldChannel = twitchOptions.channel;
     var newChannel = window_channel_input.value;
     if (newChannel !== null && newChannel !== oldChannel) {
+        getChannelInfos(newChannel);
         twitchOptions.channel = newChannel;
         setStoragedChannel(newChannel);
         player.setChannel(newChannel);

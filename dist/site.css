@@ -48,7 +48,7 @@ body {
     height: 100%;
     -webkit-app-region: drag;
     display: grid;
-    grid-template-columns: 230px 50px 138px;
+    grid-template-columns: 230px 50px 200px 138px;
 }
 
 .window-title {
@@ -59,6 +59,11 @@ body {
     overflow-x: hidden;
     font-family: "Segoe UI", sans-serif;
     font-size: 12px;
+}
+
+#window-game {
+    text-align: end;
+    width: 100%;
 }
 
 #window-channel-input{

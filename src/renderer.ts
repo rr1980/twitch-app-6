@@ -54,6 +54,8 @@ document.onreadystatechange = () => {
 
         const lastChnnel = getLastChannel();
 
+        console.debug(lastChnnel);
+
         twitchOptions = {
             channel: lastChnnel ? lastChnnel.name : null,
             height: "100%",
@@ -119,7 +121,7 @@ const getChannelInfos = (channel: string) => {
 const goChannel = (event: Event = null) => {
     const oldChannel = getLastChannel();
     const newChannel = window_channel_input.value;
-    if (newChannel !== null && (!oldChannel || newChannel !== oldChannel.name)) {
+    if (newChannel && (!oldChannel || newChannel !== oldChannel.name)) {
         window_channel_input.value = newChannel;
         setStoragedChannel(newChannel);
         player.setChannel(newChannel);

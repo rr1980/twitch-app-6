@@ -9,7 +9,7 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow = null;
 let mainWindowHandler: any;
 
-menu.setApplicationMenu(false);
+menu.setApplicationMenu(null);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -46,7 +46,7 @@ const create = () => {
   mainWindow.on('blur', () => mainWindowHandler.stop(16, 9, 1));
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   mainWindowHandler = new aspect(mainWindow);
 
   electronLocalshortcut.register(mainWindow, 'Escape', () => {

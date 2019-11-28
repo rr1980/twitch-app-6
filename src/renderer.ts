@@ -1,23 +1,7 @@
-const { remote, ipcRenderer } = require('electron');
 
-declare var Twitch: any;
-interface Channel {
-    name: string,
-    date: Date
-}
+import { ipcRenderer } from 'electron';
+import { win, Channel, HtmlElements } from './common';
 
-const win = remote.getCurrentWindow();
-
-const title_bar = document.getElementById("title-bar");
-const window_channel_input = document.getElementById("window-channel-input") as HTMLInputElement;
-const window_channel_button = document.getElementById("window-channel-button");
-const window_channel_check = document.getElementById("window-channel-check");
-const window_channel_input_select = document.getElementById("window-channel-input-select");
-const window_game = document.getElementById("window-game");
-const min_button = document.getElementById("min-button");
-const max_button = document.getElementById("max-button");
-const restore_button = document.getElementById("restore-button");
-const close_button = document.getElementById("close-button");
 
 const select_class = "channel_selection";
 
@@ -31,21 +15,21 @@ document.onreadystatechange = () => {
         win.on("maximize", (event) => document.body.classList.toggle("maximized"));
         win.on("unmaximize", (event) => document.body.classList.toggle("maximized"));
 
-        min_button.addEventListener("click", (event) => win.minimize());
-        max_button.addEventListener("click", (event) => win.maximize());
-        restore_button.addEventListener("click", (event) => win.unmaximize());
-        close_button.addEventListener("click", (event) => win.close());
+        HtmlElements.min_button.addEventListener("click", (event) => win.minimize());
+        HtmlElements.max_button.addEventListener("click", (event) => win.maximize());
+        HtmlElements.restore_button.addEventListener("click", (event) => win.unmaximize());
+        HtmlElements.close_button.addEventListener("click", (event) => win.close());
 
-        window_channel_input.addEventListener('keydown', (event) => {
+        HtmlElements.window_channel_input.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 goChannel();
             }
         });
-        window_channel_button.addEventListener('click', goChannel);
-        window_channel_check.addEventListener('change', alwaysTop);
+        HtmlElements.window_channel_button.addEventListener('click', goChannel);
+        HtmlElements.window_channel_check.addEventListener('change', alwaysTop);
 
         ipcRenderer.on('toggle-title-bar', (event, data) => {
-            title_bar.classList.toggle("hide");
+            HtmlElements.title_bar.classList.toggle("hide");
         });
 
         ipcRenderer.on('toggle-dev', (event, data) => {
@@ -64,7 +48,7 @@ document.onreadystatechange = () => {
             width: "100%",
         };
 
-        window_channel_input.value = twitchOptions.channel;
+        HtmlElements.window_channel_input.value = twitchOptions.channel;
         player = new Twitch.Player("twitch-container", twitchOptions);
 
         getChannelInfos(twitchOptions.channel);
@@ -111,7 +95,7 @@ const getChannelInfos = (channel: string) => {
             const game = response_streams.stream.game;
             const viewers = response_streams.stream.viewers;
             const html = game + " - " + viewers;
-            window_game.innerText = html;
+            HtmlElements.window_game.innerText = html;
         }).catch((error) => {
             console.log('Something went wrong streams', error);
         });
@@ -122,9 +106,9 @@ const getChannelInfos = (channel: string) => {
 
 const goChannel = (event: Event = null) => {
     const oldChannel = getLastChannel();
-    const newChannel = window_channel_input.value;
+    const newChannel = HtmlElements.window_channel_input.value;
     if (newChannel && (!oldChannel || newChannel !== oldChannel.name)) {
-        window_channel_input.value = newChannel;
+        HtmlElements.window_channel_input.value = newChannel;
         setStoragedChannel(newChannel);
         player.setChannel(newChannel);
         getChannelInfos(newChannel);
@@ -169,7 +153,7 @@ const getLastChannel = () => {
 
 const buildDataListElements = () => {
 
-    window_channel_input_select.innerHTML = "";
+    HtmlElements.window_channel_input_select.innerHTML = "";
 
     if (channels.length > 0) {
         channels.forEach((item) => {
@@ -178,7 +162,7 @@ const buildDataListElements = () => {
             option.id = id;
             option.classList.add(select_class);
             option.value = item.name;
-            window_channel_input_select.appendChild(option);
+            HtmlElements.window_channel_input_select.appendChild(option);
         });
     }
 }

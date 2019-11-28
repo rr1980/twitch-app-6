@@ -8,8 +8,8 @@
         "removeComments": false,
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "predist",
-        "baseUrl": ".",
+        "outDir": "dist",
+        "baseUrl": "./src",
         "paths": {
             "*": [
                 "node_modules/*"

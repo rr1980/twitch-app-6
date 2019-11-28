@@ -3,25 +3,6 @@ import { ipcRenderer } from 'electron';
 import { win, Channel, HtmlElements } from './common';
 
 
-// declare var Twitch: any;
-// interface Channel {
-//     name: string,
-//     date: Date
-// }
-
-// const win = remote.getCurrentWindow();
-
-// const title_bar = document.getElementById("title-bar");
-// const window_channel_input = document.getElementById("window-channel-input") as HTMLInputElement;
-// const window_channel_button = document.getElementById("window-channel-button");
-// const window_channel_check = document.getElementById("window-channel-check");
-// const window_channel_input_select = document.getElementById("window-channel-input-select");
-// const window_game = document.getElementById("window-game");
-// const min_button = document.getElementById("min-button");
-// const max_button = document.getElementById("max-button");
-// const restore_button = document.getElementById("restore-button");
-// const close_button = document.getElementById("close-button");
-
 const select_class = "channel_selection";
 
 let twitchOptions;

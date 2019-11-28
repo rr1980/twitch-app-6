@@ -9,7 +9,7 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow = null;
 let mainWindowHandler: any;
 
-menu.setApplicationMenu(false);
+menu.setApplicationMenu(null);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

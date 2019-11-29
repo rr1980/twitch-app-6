@@ -9,6 +9,7 @@ export interface Channel {
   date: Date
 }
 
+
 export const win = remote.getCurrentWindow();
 
 export namespace HtmlElements {
@@ -23,3 +24,5 @@ export namespace HtmlElements {
   export const restore_button = document.getElementById("restore-button");
   export const close_button = document.getElementById("close-button");
 }
+
+export const select_class = "channel_selection";

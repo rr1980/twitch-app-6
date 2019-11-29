@@ -7,7 +7,7 @@ module.exports = {
         __dirname: false
     },
     entry: {
-        "renderer": './src/renderer.ts'
+        "renderer": './src/renderer/renderer.ts'
     },
     output: {
         filename: '[name].js',

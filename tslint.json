@@ -25,7 +25,8 @@
         "no-empty": false,
         "max-line-length": false,
         "no-namespace": false,
-        "ordered-imports": false
+        "ordered-imports": false,
+        "no-shadowed-variable": false
     },
     "jsRules": {
         "max-line-length": {

@@ -9,16 +9,12 @@
   ],
   "author": "rr1980",
   "license": "ISC",
-  "main": "dist/main.min.js",
+  "main": "./dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "build:prod": "tsc && npm run minify",
-    "minify": "uglifyjs --compress --mangle --output dist/main.min.js -- predist/main.js && uglifyjs --compress --mangle --output dist/renderer.min.js -- predist/renderer.js",
-    "watch": "tsc -w",
-    "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron ./predist/main.js",
-    "dist": "electron-builder",
-    "pack": "electron-builder --dir"
+    "build": "webpack --config webpack.main.js && webpack --config webpack.renderer.js",
+    "build:prod": "webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production",
+    "start": "npm run build && electron ./dist/main.js",
+    "dist": "npm run build:prod && electron-builder"
   },
   "build": {
     "appId": "twitch.app.6",
@@ -31,8 +27,15 @@
       "dist/**"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "dist//icons/icon.png"
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icons/icon.png"
     }
   },
   "dependencies": {
@@ -41,11 +44,21 @@
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
     "electron": "^7.1.2",
     "electron-builder": "^21.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
     "minify": "^4.1.3",
+    "rxjs": "^6.5.3",
+    "style-loader": "^1.0.1",
+    "ts-loader": "^6.2.1",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.2"
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }

@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "target": "es2018",
+        "module": "es6",
         "moduleResolution": "node",
         "sourceMap": true,
         "emitDecoratorMetadata": true,
@@ -8,13 +9,21 @@
         "removeComments": false,
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "predist",
-        "baseUrl": ".",
+        "outDir": "dist",
+        "baseUrl": "./src",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
         "paths": {
             "*": [
                 "node_modules/*"
             ]
-        }
+        },
+        "lib": [
+            "es2018",
+            "dom",
+            "dom.iterable"
+        ]
     },
     "include": [
         "src/**/*"

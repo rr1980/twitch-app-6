@@ -62,8 +62,7 @@ internal/
 
 TwitchApp4-win32-x64/
 
-dist/**/*.js
-dist/**/*.map
+dist/
 
 build/
 
